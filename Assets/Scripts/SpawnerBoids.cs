@@ -7,7 +7,7 @@ public class SpawnerBoids : MonoBehaviour
     public int numberBoids = 20;
     public GameObject boid;
 
-    // Start is called before the first frame update
+    //on awake, spawn the boids on random positions in the scene
     void Awake()
     {
         for(int i=0; i <numberBoids; i++)
@@ -15,11 +15,5 @@ public class SpawnerBoids : MonoBehaviour
             GameObject boid_i = Instantiate(boid);
             boid_i.transform.position = Random.insideUnitCircle * 10;
         }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }
