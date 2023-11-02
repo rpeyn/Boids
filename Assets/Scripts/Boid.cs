@@ -12,4 +12,9 @@ public class Boid : MonoBehaviour
         //the boid starts moving in a random direction with the maximum speed
         boidRigidbody.velocity = Random.insideUnitCircle * maxSpeed;
     }
+
+    private void Update()
+    {
+        
+    }
 }
