@@ -21,6 +21,7 @@ public class BoidsManager : MonoBehaviour
     void Start()
     {
         boids = FindObjectsOfType<Boid>();
+        Debug.Log(boids.Length);
     }
 
     void Update()
@@ -99,14 +100,16 @@ public class BoidsManager : MonoBehaviour
             //add the neighborhood's direction and the offset from the neighborhood's center to my boid's acceleration
             acceleration += avgNeighborhoodDir + offsetToNeighborhoodCenter;
 
+            boids[i].UpdateAcceleration(acceleration);
+
             //update the velocity of my boid to be the previous velocity + acceleration
             //the new velocity has a clamped magnitude to keep it lower than the maximum speed
-            boids[i].boidRigidbody.velocity = Vector2.ClampMagnitude(boids[i].boidRigidbody.velocity + acceleration * Time.deltaTime, boids[i].maxSpeed);
+            //boids[i].boidRigidbody.velocity = Vector2.ClampMagnitude(boids[i].boidRigidbody.velocity + acceleration * Time.deltaTime, boids[i].maxSpeed);
         }
     }
 
     //turns Vector3 into Vector2
-    private Vector2 TurnV3toV2(Vector3 v)
+    public Vector2 TurnV3toV2(Vector3 v)
     {
         return new Vector2(v.x, v.y);
     }
