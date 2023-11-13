@@ -8,7 +8,7 @@ public class Boid : MonoBehaviour
     public float maxSpeed;
     float viewingRadius = 10f;
     float raycastCircleRadius = 2f;
-    float rotationAngle = Mathf.Deg2Rad * 30f;
+    float rotationAngle = Mathf.Deg2Rad * 20f;
 
     int steeringDirection = 0;
 
@@ -22,6 +22,10 @@ public class Boid : MonoBehaviour
     {
         //the boid starts moving in a random direction with the maximum speed
         boidRigidbody.velocity = Random.insideUnitCircle * maxSpeed;
+        //GameObject[] birds = GetComponentsInChildren<>();
+        //birds[Random.Range(0, birds.Length)].SetActive(true);
+        GameObject bird = this.transform.GetChild(Random.Range(0, 3)).gameObject;
+        bird.SetActive(true);
     }
 
     public void UpdateAcceleration(Vector2 acceleration)
@@ -37,8 +41,6 @@ public class Boid : MonoBehaviour
         // If it hits something...
         if (hit.collider != null && hit.transform.tag == "Obstacle")
         {
-            //if(isTurning == false)
-            //{
                 RaycastHit2D hitClock = Physics2D.CircleCast(transform.position, raycastCircleRadius,Rotate(boidRigidbody.velocity.normalized, -1), viewingRadius);
                 RaycastHit2D hitCounterClock = Physics2D.CircleCast(transform.position, raycastCircleRadius,Rotate(boidRigidbody.velocity.normalized, 1), viewingRadius);
 
@@ -58,18 +60,9 @@ public class Boid : MonoBehaviour
                     steeringDirection = 1;
                 }
                 else { steeringDirection = -1; }
-            //}
-            
-            //isTurning = true;
 
-            // Calculate the distance from the surface 
-            float distanceY = hit.point.y - transform.position.y;
-            float distanceX = hit.point.x - transform.position.x;
-            Vector2 offset = new Vector2(distanceX, distanceY);
-
-            acceleration += FindSteeringDirection(boidRigidbody.velocity.normalized, steeringDirection)* 10f; // offset.magnitude ;
+            acceleration += FindSteeringDirection(boidRigidbody.velocity.normalized, steeringDirection)* 20f;
         }
-        //else isTurning = false;
         
         boidRigidbody.velocity = Vector2.ClampMagnitude(boidRigidbody.velocity + acceleration * Time.deltaTime, maxSpeed);
     }
