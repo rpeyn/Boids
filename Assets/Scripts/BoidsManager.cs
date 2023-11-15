@@ -100,11 +100,9 @@ public class BoidsManager : MonoBehaviour
             //add the neighborhood's direction and the offset from the neighborhood's center to my boid's acceleration
             acceleration += avgNeighborhoodDir + offsetToNeighborhoodCenter;
 
+            //a function from the boid that adds obstacle avoidance to the acceleration
+            //and adds the acceleration to the velocity
             boids[i].UpdateAcceleration(acceleration);
-
-            //update the velocity of my boid to be the previous velocity + acceleration
-            //the new velocity has a clamped magnitude to keep it lower than the maximum speed
-            //boids[i].boidRigidbody.velocity = Vector2.ClampMagnitude(boids[i].boidRigidbody.velocity + acceleration * Time.deltaTime, boids[i].maxSpeed);
         }
     }
 

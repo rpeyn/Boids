@@ -104,7 +104,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   boidRigidbody: {fileID: 7844866674267538916}
   maxSpeed: 5
-  velocityLine: {fileID: 0}
 --- !u!50 &7844866674267538916
 Rigidbody2D:
   serializedVersion: 4
