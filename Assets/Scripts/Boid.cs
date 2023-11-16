@@ -1,21 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 public class Boid : MonoBehaviour
 {
     public Rigidbody2D boidRigidbody;
-    public float maxSpeed;
+    public static float maxSpeed = 5f;
+
+    //vars for obstacle detection with raycast
     float viewingRadius = 10f;
     float raycastCircleRadius = 2f;
 
-    //the angle with which we rotate when the boid is looking for a direction to steer towards
+    //the angle by which we rotate the boid when looking for a direction to steer towards
     float rotationAngle = Mathf.Deg2Rad * 20f;
 
     //vars for deciding if steering to the left or right
     int steeringDirection = 0;
     float offsetHitClock = 0, offsetHitCounterClock = 0;
-
 
     void Start()
     {
@@ -25,6 +28,11 @@ public class Boid : MonoBehaviour
         //picks a random bird character (from the 3 options that are unactive children to the boid prefab)
         GameObject bird = this.transform.GetChild(Random.Range(0, 3)).gameObject;
         bird.SetActive(true);
+
+        //setting up the max speed UI slider
+        Slider maxSpeedSlider = GameObject.Find("Max Speed Slider").GetComponent<Slider>();
+        TMP_Text maxSpeedText= GameObject.Find("Max Speed Text").GetComponent<TMP_Text>();
+        SetSlider(maxSpeedSlider, maxSpeedText, maxSpeed);
     }
 
 
@@ -72,10 +80,11 @@ public class Boid : MonoBehaviour
                 }
                 else { steeringDirection = -1; }
 
-            //adds the new steering vector to the acceleration with a weight
-            acceleration += FindSteeringDirection(boidRigidbody.velocity.normalized, steeringDirection)* 20f;
+            //scales the new steering vector to the maximum speed and a weight and adds it to the acceleration
+            acceleration += FindSteeringDirection(boidRigidbody.velocity.normalized, steeringDirection) * maxSpeed * 5f;
         }
         
+
         //adds the acceleration to the boid's velocity, clamping it to the maximum speed
         boidRigidbody.velocity = Vector2.ClampMagnitude(boidRigidbody.velocity + acceleration * Time.deltaTime, maxSpeed);
     }
@@ -117,5 +126,15 @@ public class Boid : MonoBehaviour
     {
         RaycastHit2D hit = Physics2D.CircleCast(transform.position, raycastCircleRadius, direction, viewingRadius);
         return (hit.collider != null && hit.transform.tag == "Obstacle");
+    }
+
+
+
+    //-------- UI --------------
+    //function to set a slider's value and value text
+    public static void SetSlider(Slider slider, TMP_Text number,float value)
+    {
+        slider.value = value;
+        number.text = value.ToString();
     }
 }

@@ -25,8 +25,6 @@ public class SpawnerBoids : MonoBehaviour
             boid_i.transform.position = Random.insideUnitCircle * spawnAreaBoids;
         }
 
-        //boidsNumberText = sliderBoidsNumber.GetComponentInChildren<TextMeshPro>();
-
         sliderBoidsNumber.value = numberBoids;
         boidsNumberText.text = numberBoids.ToString();
     }

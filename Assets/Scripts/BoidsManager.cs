@@ -5,23 +5,36 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 public class BoidsManager : MonoBehaviour
 {
     Boid[] boids;
     Vector2 myBoidPos, otherBoidPos;
 
-    float distance, threshold = 5f, avoidThreshold = 2.5f;
+    float distanceOtherBoid, neighborThreshold = 7f, avoidThreshold = 4.5f;
     int neighborhoodSize = 0;
 
-    Vector2 avgNeighborhoodDir, avgNeighborhoodPos, acceleration;
-    Vector2 offsetToNeighborhoodCenter = Vector2.zero;
-    Vector2 offsetAvoidance = Vector2.zero;
+    //the three forces: Alignment, Cohesion, and Avoidance
+    Vector2 avgNeighborhoodDir, offsetToNeighborhoodCenter = Vector2.zero, offsetAvoidance = Vector2.zero;
+    Vector2 avgNeighborhoodPos, acceleration;
+
+    //weights of the three forces
+    public static int weightAvoid = 5, weightAlign = 2, weightCohes = 1;
+
+    //UI elements for changing the weights
+    public Slider sliderWeightAvoid, sliderWeightAlign, sliderWeightCohes;
+    public TMP_Text textSliderAvoid, textSliderAlign, textSliderCohes;
 
     void Start()
     {
         boids = FindObjectsOfType<Boid>();
-        Debug.Log(boids.Length);
+
+        //setting up the weights sliders
+        Boid.SetSlider(sliderWeightAvoid, textSliderAvoid, weightAvoid);
+        Boid.SetSlider(sliderWeightAlign, textSliderAlign, weightAlign);
+        Boid.SetSlider(sliderWeightCohes, textSliderCohes, weightCohes);
     }
 
     void Update()
@@ -45,10 +58,10 @@ public class BoidsManager : MonoBehaviour
                     otherBoidPos = boids[j].transform.position;
 
                     //measure distance between my boid and the other boid
-                    distance = Vector2.Distance(myBoidPos, otherBoidPos);
+                    distanceOtherBoid = Vector2.Distance(myBoidPos, otherBoidPos);
 
                     //check if the other boid is close enough to be a "neighbor"
-                    if( distance < threshold)
+                    if( distanceOtherBoid < neighborThreshold)
                     {
                         neighborhoodSize++;
                         /*
@@ -62,7 +75,7 @@ public class BoidsManager : MonoBehaviour
                         avgNeighborhoodPos += TurnV3toV2(otherBoidPos);
 
                         //check if the other boid is too close and needs to be avoided
-                        if ( distance < avoidThreshold)
+                        if ( distanceOtherBoid < avoidThreshold)
                         {
                             //measure offset between my boid and the other boid
                             //offset is the vector between the two (both direction and length)
@@ -75,7 +88,7 @@ public class BoidsManager : MonoBehaviour
                             the smaller the offset the bigger the avoidance force and vice-versa
                             inspired by Sebastian Lague's Boids project https://youtu.be/bqtqltqcQhw?si=EDA9WktGs2Vs4Nr7
                             */
-                            acceleration -= offsetAvoidance / Vector2.SqrMagnitude(offsetAvoidance);
+                            acceleration -= offsetAvoidance * weightAvoid / Vector2.SqrMagnitude(offsetAvoidance);
                         }
                     }
 
@@ -98,7 +111,7 @@ public class BoidsManager : MonoBehaviour
 
             //ALIGNMENT AND COHESION FORCES ADDED
             //add the neighborhood's direction and the offset from the neighborhood's center to my boid's acceleration
-            acceleration += avgNeighborhoodDir + offsetToNeighborhoodCenter;
+            acceleration += avgNeighborhoodDir * weightAlign + offsetToNeighborhoodCenter * weightCohes;
 
             //a function from the boid that adds obstacle avoidance to the acceleration
             //and adds the acceleration to the velocity
@@ -110,5 +123,28 @@ public class BoidsManager : MonoBehaviour
     public Vector2 TurnV3toV2(Vector3 v)
     {
         return new Vector2(v.x, v.y);
+    }
+
+
+    /*----------UI--------------
+    functions for updating the weights from the weights sliders
+    the 3 are exactly the same, just different variables
+    */
+    public void UpdateWeightAvoid()
+    {
+        weightAvoid = Mathf.RoundToInt(sliderWeightAvoid.value);
+        textSliderAvoid.text = weightAvoid.ToString();
+    }
+
+    public void UpdateWeightAlign()
+    {
+        weightAlign = Mathf.RoundToInt(sliderWeightAlign.value);
+        textSliderAlign.text = weightAlign.ToString();
+    }
+    
+    public void UpdateWeightCohes()
+    {
+        weightCohes = Mathf.RoundToInt(sliderWeightCohes.value);
+        textSliderCohes.text = weightCohes.ToString();
     }
 }

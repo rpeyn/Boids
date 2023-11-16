@@ -5,8 +5,15 @@ using TMPro;
 
 public class UI : MonoBehaviour
 {
-    public TMP_Text speed;
+    public TMP_Text speed, boidSpeed;
 
+    public Slider speedSlider;
+
+    public void ChangeSpeed()
+    {
+        boidSpeed.text = speedSlider.value.ToString();
+        Boid.maxSpeed = speedSlider.value;
+    }
     public void Pause()
     {
         Time.timeScale = 0;
