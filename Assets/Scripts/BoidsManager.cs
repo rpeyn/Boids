@@ -1,5 +1,5 @@
 //The boids manager loops through every boid in the scene and updates its velocity
-//based on Alignment, Cohesion, and Avoidance forces
+//based on Alignment, Cohesion, and Separation forces
 
 using System.Collections;
 using System.Collections.Generic;
@@ -13,26 +13,26 @@ public class BoidsManager : MonoBehaviour
     Boid[] boids;
     Vector2 myBoidPos, otherBoidPos;
 
-    float distanceOtherBoid, neighborThreshold = 7f, avoidThreshold = 4.5f;
+    float distanceOtherBoid, neighborThreshold = 7f, separThreshold = 4.5f;
     int neighborhoodSize = 0;
 
-    //the three forces: Alignment, Cohesion, and Avoidance
-    Vector2 avgNeighborhoodDir, offsetToNeighborhoodCenter = Vector2.zero, offsetAvoidance = Vector2.zero;
+    //the three forces: Alignment, Cohesion, and Separations
+    Vector2 avgNeighborhoodVel, offsetToNeighborhoodCenter = Vector2.zero, offsetSeparation = Vector2.zero;
     Vector2 avgNeighborhoodPos, acceleration;
 
     //weights of the three forces
-    public static int weightAvoid = 5, weightAlign = 2, weightCohes = 1;
+    public static int weightSepar = 5, weightAlign = 2, weightCohes = 1;
 
     //UI elements for changing the weights
-    public Slider sliderWeightAvoid, sliderWeightAlign, sliderWeightCohes;
-    public TMP_Text textSliderAvoid, textSliderAlign, textSliderCohes;
+    public Slider sliderWeightSepar, sliderWeightAlign, sliderWeightCohes;
+    public TMP_Text textSliderSepar, textSliderAlign, textSliderCohes;
 
     void Start()
     {
         boids = FindObjectsOfType<Boid>();
 
         //setting up the weights sliders
-        Boid.SetSlider(sliderWeightAvoid, textSliderAvoid, weightAvoid);
+        Boid.SetSlider(sliderWeightSepar, textSliderSepar, weightSepar);
         Boid.SetSlider(sliderWeightAlign, textSliderAlign, weightAlign);
         Boid.SetSlider(sliderWeightCohes, textSliderCohes, weightCohes);
     }
@@ -43,7 +43,7 @@ public class BoidsManager : MonoBehaviour
         for(int i = 0; i < boids.Length; i++)
         {
             //reset all values
-            avgNeighborhoodDir = avgNeighborhoodPos = acceleration = Vector2.zero;
+            avgNeighborhoodVel = avgNeighborhoodPos = acceleration = Vector2.zero;
             neighborhoodSize = 0;
 
             //get the position of current boid
@@ -69,26 +69,26 @@ public class BoidsManager : MonoBehaviour
                         direction of the boid is the normalized velocity vector
                         the velocity has a direction and a length/speed - when normalized the length is 1, so it only represents the direction
                         */
-                        avgNeighborhoodDir += boids[j].boidRigidbody.velocity.normalized;
+                        avgNeighborhoodVel += boids[j].boidRigidbody.velocity;
 
                         //add the position of the other boid to the average position of the neighborhood
                         avgNeighborhoodPos += TurnV3toV2(otherBoidPos);
 
                         //check if the other boid is too close and needs to be avoided
-                        if ( distanceOtherBoid < avoidThreshold)
+                        if ( distanceOtherBoid < separThreshold)
                         {
                             //measure offset between my boid and the other boid
                             //offset is the vector between the two (both direction and length)
-                            offsetAvoidance = TurnV3toV2(otherBoidPos) - TurnV3toV2(myBoidPos);
+                            offsetSeparation = TurnV3toV2(otherBoidPos) - TurnV3toV2(myBoidPos);
 
-                            //AVOIDANCE FORCE ADDED
+                            //SEPARATION FORCE ADDED
                             /*
-                            add the avoidance force to the acceleration
-                            offsetAvoidance / offsetAvoidance's length^2 because the effect(length) needs to be reversed
-                            the smaller the offset the bigger the avoidance force and vice-versa
+                            add the separation force to the acceleration
+                            offsetSeparation / offsetSeparation's length^2 because the effect(length) needs to be reversed
+                            the smaller the offset the bigger the separation force and vice-versa
                             inspired by Sebastian Lague's Boids project https://youtu.be/bqtqltqcQhw?si=EDA9WktGs2Vs4Nr7
                             */
-                            acceleration -= offsetAvoidance * weightAvoid / Vector2.SqrMagnitude(offsetAvoidance);
+                            acceleration -= offsetSeparation * weightSepar / Vector2.SqrMagnitude(offsetSeparation);
                         }
                     }
 
@@ -99,7 +99,7 @@ public class BoidsManager : MonoBehaviour
             if( neighborhoodSize > 0 )
             {
                 //find the average of all neighbors' directions
-                avgNeighborhoodDir/= neighborhoodSize;
+                avgNeighborhoodVel/= neighborhoodSize;
 
                 //find the average of all neighbors' positions
                 //the center of the neighborhood
@@ -111,9 +111,9 @@ public class BoidsManager : MonoBehaviour
 
             //ALIGNMENT AND COHESION FORCES ADDED
             //add the neighborhood's direction and the offset from the neighborhood's center to my boid's acceleration
-            acceleration += avgNeighborhoodDir * weightAlign + offsetToNeighborhoodCenter * weightCohes;
+            acceleration += avgNeighborhoodVel * weightAlign + offsetToNeighborhoodCenter * weightCohes;
 
-            //a function from the boid that adds obstacle avoidance to the acceleration
+            //a function from the boid that adds obstacle separation to the acceleration
             //and adds the acceleration to the velocity
             boids[i].UpdateAcceleration(acceleration);
         }
@@ -130,10 +130,10 @@ public class BoidsManager : MonoBehaviour
     functions for updating the weights from the weights sliders
     the 3 are exactly the same, just different variables
     */
-    public void UpdateWeightAvoid()
+    public void UpdateWeightSepar()
     {
-        weightAvoid = Mathf.RoundToInt(sliderWeightAvoid.value);
-        textSliderAvoid.text = weightAvoid.ToString();
+        weightSepar = Mathf.RoundToInt(sliderWeightSepar.value);
+        textSliderSepar.text = weightSepar.ToString();
     }
 
     public void UpdateWeightAlign()

@@ -135,7 +135,7 @@ GameObject:
   - component: {fileID: 22308275}
   - component: {fileID: 22308274}
   m_Layer: 5
-  m_Name: Avoidance Text
+  m_Name: Separation Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2302,13 +2302,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d75d07f98ffab5b4fac168c7fb13ee6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weightAvoid: 5
-  weightAlign: 2
-  weightCohes: 1
-  sliderWeightAvoid: {fileID: 639260926}
+  sliderWeightSepar: {fileID: 639260926}
   sliderWeightAlign: {fileID: 1667796837}
   sliderWeightCohes: {fileID: 1471121117}
-  textSliderAvoid: {fileID: 22308274}
+  textSliderSepar: {fileID: 22308274}
   textSliderAlign: {fileID: 496929936}
   textSliderCohes: {fileID: 1288465940}
 --- !u!1 &415897606
@@ -3103,7 +3100,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.5921569, g: 0.79519576, b: 0.9607843, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -3554,7 +3551,7 @@ GameObject:
   - component: {fileID: 639260928}
   - component: {fileID: 639260926}
   m_Layer: 5
-  m_Name: Avoidance Slider
+  m_Name: Separation Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3613,7 +3610,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 389142809}
         m_TargetAssemblyTypeName: BoidsManager, Assembly-CSharp
-        m_MethodName: UpdateWeightAvoid
+        m_MethodName: UpdateWeightSepar
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5349,7 +5346,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 25.1}
-  m_SizeDelta: {x: 215, y: 50}
+  m_SizeDelta: {x: 218, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1283355186
 MonoBehaviour:
@@ -5371,7 +5368,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Change Avoidance Weight
+  m_text: Change Separation Weight
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

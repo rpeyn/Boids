@@ -81,7 +81,7 @@ public class Boid : MonoBehaviour
                 else { steeringDirection = -1; }
 
             //scales the new steering vector to the maximum speed and a weight and adds it to the acceleration
-            acceleration += FindSteeringDirection(boidRigidbody.velocity.normalized, steeringDirection) * maxSpeed * 5f;
+            acceleration = FindSteeringDirection(boidRigidbody.velocity.normalized, steeringDirection) * maxSpeed * 5f;
         }
         
 
